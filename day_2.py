@@ -1,4 +1,3 @@
-from day_1 import AsyncCrawler
 from bs4 import BeautifulSoup
 import asyncio
 from urllib.parse import urljoin, urlparse
@@ -87,7 +86,8 @@ class HTMLParser:
             parsed_url = urlparse(absolute_url)
 
             if parsed_url.scheme in ["http", "https"] and parsed_url.netloc:
-                links.append(absolute_url)
+                if absolute_url not in links:
+                    links.append(absolute_url)
 
         return links
     
@@ -208,7 +208,9 @@ class HTMLParser:
         return lists
 
 if __name__ == "__main__":
-    
+
+    from day_1 import AsyncCrawler
+
     async def parsing ():
         
         crawler = AsyncCrawler(max_concurrent=5)
@@ -221,7 +223,7 @@ if __name__ == "__main__":
         ]
 
         try:
-            print("\n загрука и парсинг страниц")
+            print("\nЗагрука и парсинг страниц")
 
             tasks = []
 

@@ -1,0 +1,1301 @@
+{
+    "processed_urls": {
+        "https://docs.python.org/3/": {
+            "url": "https://docs.python.org/3/",
+            "title": "3.14.6 Documentation",
+            "text": "3.14.6 Documentation Theme Auto Light Dark Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide Navigation index modules | Python » 3.14.6 Documentation » | Theme Auto Light Dark | Python 3.14.6 documentation Welcome! This is the official documentation for Python 3.14.6. Documentation sections: What's new in Python 3.14? Or all \"What's new\" documents since Python 2.0 Tutorial Start here: a tour of Python's syntax and features Library reference Standard library and builtins Language reference Syntax and language elements Python setup and usage How to install, configure, and use Python Python HOWTOs In-depth topic manuals Installing Python modules Third-party modules and PyPI.org Extending and embedding For C/C++ programmers Python's C API C API reference FAQs Frequently asked questions (with answers!) Deprecations Deprecated functionality Other resources: Python Packaging User Guide Resources relating to Python packaging Static Typing with Python Information and guides about Python type safety Indices, glossary, and search: Global module index All modules and libraries General index All functions, classes, and terms Glossary Terms explained Search page Search this documentation Complete table of contents All sections and subsections Project information: Reporting issues Contributing to docs Download the documentation History and license of Python Copyright About the documentation Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide « Navigation index modules | Python » 3.14.6 Documentation » | Theme Auto Light Dark | © Copyright 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See History and License for more information. The Python Software Foundation is a non-profit corporation. Please donate. Last updated on Jul 05, 2026 (14:49 UTC). Found a bug ? Created using Sphinx 8.2.3.",
+            "links": [
+                "https://www.python.org/",
+                "https://docs.python.org/3/download.html",
+                "https://docs.python.org/3.16/",
+                "https://docs.python.org/3.15/",
+                "https://docs.python.org/3.14/",
+                "https://docs.python.org/3.13/",
+                "https://docs.python.org/3.12/",
+                "https://docs.python.org/3.11/",
+                "https://docs.python.org/3.10/",
+                "https://docs.python.org/3.9/",
+                "https://docs.python.org/3.8/",
+                "https://docs.python.org/3.7/",
+                "https://docs.python.org/3.6/",
+                "https://docs.python.org/3.5/",
+                "https://docs.python.org/3.4/",
+                "https://docs.python.org/3.3/",
+                "https://docs.python.org/3.2/",
+                "https://docs.python.org/3.1/",
+                "https://docs.python.org/3.0/",
+                "https://docs.python.org/2.7/",
+                "https://docs.python.org/2.6/",
+                "https://www.python.org/doc/versions/",
+                "https://peps.python.org/",
+                "https://wiki.python.org/moin/BeginnersGuide",
+                "https://wiki.python.org/moin/PythonBooks",
+                "https://www.python.org/doc/av/",
+                "https://devguide.python.org/",
+                "https://docs.python.org/3/genindex.html",
+                "https://docs.python.org/3/py-modindex.html",
+                "https://docs.python.org/3/#",
+                "https://docs.python.org/3/whatsnew/3.14.html",
+                "https://docs.python.org/3/whatsnew/index.html",
+                "https://docs.python.org/3/tutorial/index.html",
+                "https://docs.python.org/3/library/index.html",
+                "https://docs.python.org/3/reference/index.html",
+                "https://docs.python.org/3/using/index.html",
+                "https://docs.python.org/3/howto/index.html",
+                "https://docs.python.org/3/installing/index.html",
+                "https://docs.python.org/3/extending/index.html",
+                "https://docs.python.org/3/c-api/index.html",
+                "https://docs.python.org/3/faq/index.html",
+                "https://docs.python.org/3/deprecations/index.html",
+                "https://packaging.python.org",
+                "https://typing.python.org",
+                "https://docs.python.org/3/glossary.html",
+                "https://docs.python.org/3/search.html",
+                "https://docs.python.org/3/contents.html",
+                "https://docs.python.org/3/bugs.html",
+                "https://devguide.python.org/documentation/help-documenting/",
+                "https://docs.python.org/3/license.html",
+                "https://docs.python.org/3/copyright.html",
+                "https://docs.python.org/3/about.html",
+                "https://docs.python.org/license.html",
+                "https://www.python.org/psf/donations/",
+                "https://docs.python.org/bugs.html",
+                "https://www.sphinx-doc.org/"
+            ],
+            "metadata": {
+                "title": "3.14.6 Documentation",
+                "description": "The official Python documentation.",
+                "keywords": ""
+            },
+            "images": [
+                {
+                    "src": "https://docs.python.org/3/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3/_static/py.svg",
+                    "alt": "Python logo"
+                }
+            ],
+            "headings": [
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                },
+                {
+                    "tag": "h1",
+                    "text": "Python 3.14.6 documentation"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                }
+            ],
+            "tables": [],
+            "lists": [
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.14.6 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "What's new in Python 3.14? Or all \"What's new\" documents since Python 2.0",
+                        "Tutorial Start here: a tour of Python's syntax and features",
+                        "Library reference Standard library and builtins",
+                        "Language reference Syntax and language elements",
+                        "Python setup and usage How to install, configure, and use Python",
+                        "Python HOWTOs In-depth topic manuals"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Installing Python modules Third-party modules and PyPI.org",
+                        "Extending and embedding For C/C++ programmers",
+                        "Python's C API C API reference",
+                        "FAQs Frequently asked questions (with answers!)",
+                        "Deprecations Deprecated functionality"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python Packaging User Guide Resources relating to Python packaging"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Static Typing with Python Information and guides about Python type safety"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Global module index All modules and libraries",
+                        "General index All functions, classes, and terms",
+                        "Glossary Terms explained"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Search page Search this documentation",
+                        "Complete table of contents All sections and subsections"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Reporting issues",
+                        "Contributing to docs",
+                        "Download the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "History and license of Python",
+                        "Copyright",
+                        "About the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.14.6 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                }
+            ]
+        },
+        "https://docs.python.org/3/download.html": {
+            "url": "https://docs.python.org/3/download.html",
+            "title": "Download — Python 3.14.6 documentation",
+            "text": "Download — Python 3.14.6 documentation Theme Auto Light Dark Navigation index modules | Python » 3.14.6 Documentation » Download | Theme Auto Light Dark | Download Python 3.14 documentation Last updated on: Jul 05, 2026 (14:49 UTC). Download an archive containing all the documentation for this version of Python: Format Packed as .zip Packed as .tar.bz2 HTML Download Download Plain text Download Download Texinfo Download Download EPUB Download We no longer provide pre-built PDFs of the documentation.\nTo build a PDF archive, follow the instructions in the Developer's Guide and run make dist-pdf in the Doc/ directory of a copy of the CPython repository. See the directory listing for file sizes. Problems Open an issue if you have comments or suggestions for the Python documentation. « Navigation index modules | Python » 3.14.6 Documentation » Download | Theme Auto Light Dark | © Copyright 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See History and License for more information. The Python Software Foundation is a non-profit corporation. Please donate. Last updated on Jul 05, 2026 (14:49 UTC). Found a bug ? Created using Sphinx 8.2.3.",
+            "links": [
+                "https://www.python.org/",
+                "https://docs.python.org/3/genindex.html",
+                "https://docs.python.org/3/py-modindex.html",
+                "https://docs.python.org/3/index.html",
+                "https://docs.python.org/3/archives/python-3.14-docs-html.zip",
+                "https://docs.python.org/3/archives/python-3.14-docs-html.tar.bz2",
+                "https://docs.python.org/3/archives/python-3.14-docs-text.zip",
+                "https://docs.python.org/3/archives/python-3.14-docs-text.tar.bz2",
+                "https://docs.python.org/3/archives/python-3.14-docs-texinfo.zip",
+                "https://docs.python.org/3/archives/python-3.14-docs-texinfo.tar.bz2",
+                "https://docs.python.org/3/archives/python-3.14-docs.epub",
+                "https://devguide.python.org/documentation/start-documenting/#building-the-documentation",
+                "https://docs.python.org/3.14/archives/",
+                "https://docs.python.org/3/bugs.html",
+                "https://docs.python.org/3/copyright.html",
+                "https://docs.python.org/license.html",
+                "https://www.python.org/psf/donations/",
+                "https://docs.python.org/bugs.html",
+                "https://www.sphinx-doc.org/"
+            ],
+            "metadata": {
+                "title": "Download — Python 3.14.6 documentation",
+                "description": "Download Python documentation.",
+                "keywords": ""
+            },
+            "images": [
+                {
+                    "src": "https://docs.python.org/3/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3/_static/py.svg",
+                    "alt": "Python logo"
+                }
+            ],
+            "headings": [
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                },
+                {
+                    "tag": "h1",
+                    "text": "Download Python 3.14 documentation"
+                },
+                {
+                    "tag": "h2",
+                    "text": "Problems"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                }
+            ],
+            "tables": [
+                [
+                    [
+                        "Format",
+                        "Packed as .zip",
+                        "Packed as .tar.bz2"
+                    ],
+                    [
+                        "HTML",
+                        "Download",
+                        "Download"
+                    ],
+                    [
+                        "Plain text",
+                        "Download",
+                        "Download"
+                    ],
+                    [
+                        "Texinfo",
+                        "Download",
+                        "Download"
+                    ],
+                    [
+                        "EPUB",
+                        "Download",
+                        ""
+                    ]
+                ]
+            ],
+            "lists": [
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.14.6 Documentation »",
+                        "Download",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.14.6 Documentation »",
+                        "Download",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                }
+            ]
+        },
+        "https://docs.python.org/3.16/": {
+            "url": "https://docs.python.org/3.16/",
+            "title": "3.16.0a0 Documentation",
+            "text": "3.16.0a0 Documentation Theme Auto Light Dark Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide Navigation index modules | Python » 3.16.0a0 Documentation » | Theme Auto Light Dark | Python 3.16.0a0 documentation Welcome! This is the official documentation for Python 3.16.0a0. Documentation sections: What's new in Python 3.16? Or all \"What's new\" documents since Python 2.0 Tutorial Start here: a tour of Python's syntax and features Library reference Standard library and builtins Language reference Syntax and language elements Python setup and usage How to install, configure, and use Python Python HOWTOs In-depth topic manuals Installing Python modules Third-party modules and PyPI.org Extending and embedding For C/C++ programmers Python's C API C API reference FAQs Frequently asked questions (with answers!) Deprecations Deprecated functionality Other resources: Python Packaging User Guide Resources relating to Python packaging Static Typing with Python Information and guides about Python type safety Indices, glossary, and search: Global module index All modules and libraries General index All functions, classes, and terms Glossary Terms explained Search page Search this documentation Complete table of contents All sections and subsections Project information: Reporting issues Contributing to docs Download the documentation History and license of Python Copyright About the documentation Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide « Navigation index modules | Python » 3.16.0a0 Documentation » | Theme Auto Light Dark | © Copyright 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See History and License for more information. The Python Software Foundation is a non-profit corporation. Please donate. Last updated on Jul 05, 2026 (14:12 UTC). Found a bug ? Created using Sphinx 8.2.3.",
+            "links": [
+                "https://www.python.org/",
+                "https://docs.python.org/3.16/download.html",
+                "https://docs.python.org/3.16/",
+                "https://docs.python.org/3.15/",
+                "https://docs.python.org/3.14/",
+                "https://docs.python.org/3.13/",
+                "https://docs.python.org/3.12/",
+                "https://docs.python.org/3.11/",
+                "https://docs.python.org/3.10/",
+                "https://docs.python.org/3.9/",
+                "https://docs.python.org/3.8/",
+                "https://docs.python.org/3.7/",
+                "https://docs.python.org/3.6/",
+                "https://docs.python.org/3.5/",
+                "https://docs.python.org/3.4/",
+                "https://docs.python.org/3.3/",
+                "https://docs.python.org/3.2/",
+                "https://docs.python.org/3.1/",
+                "https://docs.python.org/3.0/",
+                "https://docs.python.org/2.7/",
+                "https://docs.python.org/2.6/",
+                "https://www.python.org/doc/versions/",
+                "https://peps.python.org/",
+                "https://wiki.python.org/moin/BeginnersGuide",
+                "https://wiki.python.org/moin/PythonBooks",
+                "https://www.python.org/doc/av/",
+                "https://devguide.python.org/",
+                "https://docs.python.org/3.16/genindex.html",
+                "https://docs.python.org/3.16/py-modindex.html",
+                "https://docs.python.org/3.16/#",
+                "https://docs.python.org/3.16/whatsnew/3.16.html",
+                "https://docs.python.org/3.16/whatsnew/index.html",
+                "https://docs.python.org/3.16/tutorial/index.html",
+                "https://docs.python.org/3.16/library/index.html",
+                "https://docs.python.org/3.16/reference/index.html",
+                "https://docs.python.org/3.16/using/index.html",
+                "https://docs.python.org/3.16/howto/index.html",
+                "https://docs.python.org/3.16/installing/index.html",
+                "https://docs.python.org/3.16/extending/index.html",
+                "https://docs.python.org/3.16/c-api/index.html",
+                "https://docs.python.org/3.16/faq/index.html",
+                "https://docs.python.org/3.16/deprecations/index.html",
+                "https://packaging.python.org",
+                "https://typing.python.org",
+                "https://docs.python.org/3.16/glossary.html",
+                "https://docs.python.org/3.16/search.html",
+                "https://docs.python.org/3.16/contents.html",
+                "https://docs.python.org/3.16/bugs.html",
+                "https://devguide.python.org/documentation/help-documenting/",
+                "https://docs.python.org/3.16/license.html",
+                "https://docs.python.org/3.16/copyright.html",
+                "https://docs.python.org/3.16/about.html",
+                "https://docs.python.org/license.html",
+                "https://www.python.org/psf/donations/",
+                "https://docs.python.org/bugs.html",
+                "https://www.sphinx-doc.org/"
+            ],
+            "metadata": {
+                "title": "3.16.0a0 Documentation",
+                "description": "The official Python documentation.",
+                "keywords": ""
+            },
+            "images": [
+                {
+                    "src": "https://docs.python.org/3.16/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3.16/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3.16/_static/py.svg",
+                    "alt": "Python logo"
+                }
+            ],
+            "headings": [
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                },
+                {
+                    "tag": "h1",
+                    "text": "Python 3.16.0a0 documentation"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                }
+            ],
+            "tables": [],
+            "lists": [
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.16.0a0 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "What's new in Python 3.16? Or all \"What's new\" documents since Python 2.0",
+                        "Tutorial Start here: a tour of Python's syntax and features",
+                        "Library reference Standard library and builtins",
+                        "Language reference Syntax and language elements",
+                        "Python setup and usage How to install, configure, and use Python",
+                        "Python HOWTOs In-depth topic manuals"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Installing Python modules Third-party modules and PyPI.org",
+                        "Extending and embedding For C/C++ programmers",
+                        "Python's C API C API reference",
+                        "FAQs Frequently asked questions (with answers!)",
+                        "Deprecations Deprecated functionality"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python Packaging User Guide Resources relating to Python packaging"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Static Typing with Python Information and guides about Python type safety"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Global module index All modules and libraries",
+                        "General index All functions, classes, and terms",
+                        "Glossary Terms explained"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Search page Search this documentation",
+                        "Complete table of contents All sections and subsections"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Reporting issues",
+                        "Contributing to docs",
+                        "Download the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "History and license of Python",
+                        "Copyright",
+                        "About the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.16.0a0 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                }
+            ]
+        },
+        "https://docs.python.org/3.15/": {
+            "url": "https://docs.python.org/3.15/",
+            "title": "3.15.0b3 Documentation",
+            "text": "3.15.0b3 Documentation Theme Auto Light Dark Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide Navigation index modules | Python » 3.15.0b3 Documentation » | Theme Auto Light Dark | Python 3.15.0b3 documentation Welcome! This is the official documentation for Python 3.15.0b3. Documentation sections: What's new in Python 3.15? Or all \"What's new\" documents since Python 2.0 Tutorial Start here: a tour of Python's syntax and features Library reference Standard library and builtins Language reference Syntax and language elements Python setup and usage How to install, configure, and use Python Python HOWTOs In-depth topic manuals Installing Python modules Third-party modules and PyPI.org Extending and embedding For C/C++ programmers Python's C API C API reference FAQs Frequently asked questions (with answers!) Deprecations Deprecated functionality Other resources: Python Packaging User Guide Resources relating to Python packaging Static Typing with Python Information and guides about Python type safety Indices, glossary, and search: Global module index All modules and libraries General index All functions, classes, and terms Glossary Terms explained Search page Search this documentation Complete table of contents All sections and subsections Project information: Reporting issues Contributing to docs Download the documentation History and license of Python Copyright About the documentation Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide « Navigation index modules | Python » 3.15.0b3 Documentation » | Theme Auto Light Dark | © Copyright 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See History and License for more information. The Python Software Foundation is a non-profit corporation. Please donate. Last updated on Jul 05, 2026 (14:47 UTC). Found a bug ? Created using Sphinx 8.2.3.",
+            "links": [
+                "https://www.python.org/",
+                "https://docs.python.org/3.15/download.html",
+                "https://docs.python.org/3.16/",
+                "https://docs.python.org/3.15/",
+                "https://docs.python.org/3.14/",
+                "https://docs.python.org/3.13/",
+                "https://docs.python.org/3.12/",
+                "https://docs.python.org/3.11/",
+                "https://docs.python.org/3.10/",
+                "https://docs.python.org/3.9/",
+                "https://docs.python.org/3.8/",
+                "https://docs.python.org/3.7/",
+                "https://docs.python.org/3.6/",
+                "https://docs.python.org/3.5/",
+                "https://docs.python.org/3.4/",
+                "https://docs.python.org/3.3/",
+                "https://docs.python.org/3.2/",
+                "https://docs.python.org/3.1/",
+                "https://docs.python.org/3.0/",
+                "https://docs.python.org/2.7/",
+                "https://docs.python.org/2.6/",
+                "https://www.python.org/doc/versions/",
+                "https://peps.python.org/",
+                "https://wiki.python.org/moin/BeginnersGuide",
+                "https://wiki.python.org/moin/PythonBooks",
+                "https://www.python.org/doc/av/",
+                "https://devguide.python.org/",
+                "https://docs.python.org/3.15/genindex.html",
+                "https://docs.python.org/3.15/py-modindex.html",
+                "https://docs.python.org/3.15/#",
+                "https://docs.python.org/3.15/whatsnew/3.15.html",
+                "https://docs.python.org/3.15/whatsnew/index.html",
+                "https://docs.python.org/3.15/tutorial/index.html",
+                "https://docs.python.org/3.15/library/index.html",
+                "https://docs.python.org/3.15/reference/index.html",
+                "https://docs.python.org/3.15/using/index.html",
+                "https://docs.python.org/3.15/howto/index.html",
+                "https://docs.python.org/3.15/installing/index.html",
+                "https://docs.python.org/3.15/extending/index.html",
+                "https://docs.python.org/3.15/c-api/index.html",
+                "https://docs.python.org/3.15/faq/index.html",
+                "https://docs.python.org/3.15/deprecations/index.html",
+                "https://packaging.python.org",
+                "https://typing.python.org",
+                "https://docs.python.org/3.15/glossary.html",
+                "https://docs.python.org/3.15/search.html",
+                "https://docs.python.org/3.15/contents.html",
+                "https://docs.python.org/3.15/bugs.html",
+                "https://devguide.python.org/documentation/help-documenting/",
+                "https://docs.python.org/3.15/license.html",
+                "https://docs.python.org/3.15/copyright.html",
+                "https://docs.python.org/3.15/about.html",
+                "https://docs.python.org/license.html",
+                "https://www.python.org/psf/donations/",
+                "https://docs.python.org/bugs.html",
+                "https://www.sphinx-doc.org/"
+            ],
+            "metadata": {
+                "title": "3.15.0b3 Documentation",
+                "description": "The official Python documentation.",
+                "keywords": ""
+            },
+            "images": [
+                {
+                    "src": "https://docs.python.org/3.15/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3.15/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3.15/_static/py.svg",
+                    "alt": "Python logo"
+                }
+            ],
+            "headings": [
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                },
+                {
+                    "tag": "h1",
+                    "text": "Python 3.15.0b3 documentation"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                }
+            ],
+            "tables": [],
+            "lists": [
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.15.0b3 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "What's new in Python 3.15? Or all \"What's new\" documents since Python 2.0",
+                        "Tutorial Start here: a tour of Python's syntax and features",
+                        "Library reference Standard library and builtins",
+                        "Language reference Syntax and language elements",
+                        "Python setup and usage How to install, configure, and use Python",
+                        "Python HOWTOs In-depth topic manuals"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Installing Python modules Third-party modules and PyPI.org",
+                        "Extending and embedding For C/C++ programmers",
+                        "Python's C API C API reference",
+                        "FAQs Frequently asked questions (with answers!)",
+                        "Deprecations Deprecated functionality"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python Packaging User Guide Resources relating to Python packaging"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Static Typing with Python Information and guides about Python type safety"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Global module index All modules and libraries",
+                        "General index All functions, classes, and terms",
+                        "Glossary Terms explained"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Search page Search this documentation",
+                        "Complete table of contents All sections and subsections"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Reporting issues",
+                        "Contributing to docs",
+                        "Download the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "History and license of Python",
+                        "Copyright",
+                        "About the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.15.0b3 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                }
+            ]
+        },
+        "https://docs.python.org/3.14/": {
+            "url": "https://docs.python.org/3.14/",
+            "title": "3.14.6 Documentation",
+            "text": "3.14.6 Documentation Theme Auto Light Dark Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide Navigation index modules | Python » 3.14.6 Documentation » | Theme Auto Light Dark | Python 3.14.6 documentation Welcome! This is the official documentation for Python 3.14.6. Documentation sections: What's new in Python 3.14? Or all \"What's new\" documents since Python 2.0 Tutorial Start here: a tour of Python's syntax and features Library reference Standard library and builtins Language reference Syntax and language elements Python setup and usage How to install, configure, and use Python Python HOWTOs In-depth topic manuals Installing Python modules Third-party modules and PyPI.org Extending and embedding For C/C++ programmers Python's C API C API reference FAQs Frequently asked questions (with answers!) Deprecations Deprecated functionality Other resources: Python Packaging User Guide Resources relating to Python packaging Static Typing with Python Information and guides about Python type safety Indices, glossary, and search: Global module index All modules and libraries General index All functions, classes, and terms Glossary Terms explained Search page Search this documentation Complete table of contents All sections and subsections Project information: Reporting issues Contributing to docs Download the documentation History and license of Python Copyright About the documentation Download Download these documents Docs by version Python 3.16 (in development) Python 3.15 (pre-release) Python 3.14 (stable) Python 3.13 (stable) Python 3.12 (security-fixes) Python 3.11 (security-fixes) Python 3.10 (security-fixes) Python 3.9 (EOL) Python 3.8 (EOL) Python 3.7 (EOL) Python 3.6 (EOL) Python 3.5 (EOL) Python 3.4 (EOL) Python 3.3 (EOL) Python 3.2 (EOL) Python 3.1 (EOL) Python 3.0 (EOL) Python 2.7 (EOL) Python 2.6 (EOL) All versions Other resources PEP Index Beginner's Guide Book List Audio/Visual Talks Python Developer’s Guide « Navigation index modules | Python » 3.14.6 Documentation » | Theme Auto Light Dark | © Copyright 2001 Python Software Foundation. This page is licensed under the Python Software Foundation License Version 2. Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License. See History and License for more information. The Python Software Foundation is a non-profit corporation. Please donate. Last updated on Jul 05, 2026 (14:49 UTC). Found a bug ? Created using Sphinx 8.2.3.",
+            "links": [
+                "https://www.python.org/",
+                "https://docs.python.org/3.14/download.html",
+                "https://docs.python.org/3.16/",
+                "https://docs.python.org/3.15/",
+                "https://docs.python.org/3.14/",
+                "https://docs.python.org/3.13/",
+                "https://docs.python.org/3.12/",
+                "https://docs.python.org/3.11/",
+                "https://docs.python.org/3.10/",
+                "https://docs.python.org/3.9/",
+                "https://docs.python.org/3.8/",
+                "https://docs.python.org/3.7/",
+                "https://docs.python.org/3.6/",
+                "https://docs.python.org/3.5/",
+                "https://docs.python.org/3.4/",
+                "https://docs.python.org/3.3/",
+                "https://docs.python.org/3.2/",
+                "https://docs.python.org/3.1/",
+                "https://docs.python.org/3.0/",
+                "https://docs.python.org/2.7/",
+                "https://docs.python.org/2.6/",
+                "https://www.python.org/doc/versions/",
+                "https://peps.python.org/",
+                "https://wiki.python.org/moin/BeginnersGuide",
+                "https://wiki.python.org/moin/PythonBooks",
+                "https://www.python.org/doc/av/",
+                "https://devguide.python.org/",
+                "https://docs.python.org/3.14/genindex.html",
+                "https://docs.python.org/3.14/py-modindex.html",
+                "https://docs.python.org/3.14/#",
+                "https://docs.python.org/3.14/whatsnew/3.14.html",
+                "https://docs.python.org/3.14/whatsnew/index.html",
+                "https://docs.python.org/3.14/tutorial/index.html",
+                "https://docs.python.org/3.14/library/index.html",
+                "https://docs.python.org/3.14/reference/index.html",
+                "https://docs.python.org/3.14/using/index.html",
+                "https://docs.python.org/3.14/howto/index.html",
+                "https://docs.python.org/3.14/installing/index.html",
+                "https://docs.python.org/3.14/extending/index.html",
+                "https://docs.python.org/3.14/c-api/index.html",
+                "https://docs.python.org/3.14/faq/index.html",
+                "https://docs.python.org/3.14/deprecations/index.html",
+                "https://packaging.python.org",
+                "https://typing.python.org",
+                "https://docs.python.org/3.14/glossary.html",
+                "https://docs.python.org/3.14/search.html",
+                "https://docs.python.org/3.14/contents.html",
+                "https://docs.python.org/3.14/bugs.html",
+                "https://devguide.python.org/documentation/help-documenting/",
+                "https://docs.python.org/3.14/license.html",
+                "https://docs.python.org/3.14/copyright.html",
+                "https://docs.python.org/3.14/about.html",
+                "https://docs.python.org/license.html",
+                "https://www.python.org/psf/donations/",
+                "https://docs.python.org/bugs.html",
+                "https://www.sphinx-doc.org/"
+            ],
+            "metadata": {
+                "title": "3.14.6 Documentation",
+                "description": "The official Python documentation.",
+                "keywords": ""
+            },
+            "images": [
+                {
+                    "src": "https://docs.python.org/3.14/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3.14/_static/py.svg",
+                    "alt": "Python logo"
+                },
+                {
+                    "src": "https://docs.python.org/3.14/_static/py.svg",
+                    "alt": "Python logo"
+                }
+            ],
+            "headings": [
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                },
+                {
+                    "tag": "h1",
+                    "text": "Python 3.14.6 documentation"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Download"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Docs by version"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Other resources"
+                },
+                {
+                    "tag": "h3",
+                    "text": "Navigation"
+                }
+            ],
+            "tables": [],
+            "lists": [
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.14.6 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "What's new in Python 3.14? Or all \"What's new\" documents since Python 2.0",
+                        "Tutorial Start here: a tour of Python's syntax and features",
+                        "Library reference Standard library and builtins",
+                        "Language reference Syntax and language elements",
+                        "Python setup and usage How to install, configure, and use Python",
+                        "Python HOWTOs In-depth topic manuals"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Installing Python modules Third-party modules and PyPI.org",
+                        "Extending and embedding For C/C++ programmers",
+                        "Python's C API C API reference",
+                        "FAQs Frequently asked questions (with answers!)",
+                        "Deprecations Deprecated functionality"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python Packaging User Guide Resources relating to Python packaging"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Static Typing with Python Information and guides about Python type safety"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Global module index All modules and libraries",
+                        "General index All functions, classes, and terms",
+                        "Glossary Terms explained"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Search page Search this documentation",
+                        "Complete table of contents All sections and subsections"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Reporting issues",
+                        "Contributing to docs",
+                        "Download the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "History and license of Python",
+                        "Copyright",
+                        "About the documentation"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "Python 3.16 (in development)",
+                        "Python 3.15 (pre-release)",
+                        "Python 3.14 (stable)",
+                        "Python 3.13 (stable)",
+                        "Python 3.12 (security-fixes)",
+                        "Python 3.11 (security-fixes)",
+                        "Python 3.10 (security-fixes)",
+                        "Python 3.9 (EOL)",
+                        "Python 3.8 (EOL)",
+                        "Python 3.7 (EOL)",
+                        "Python 3.6 (EOL)",
+                        "Python 3.5 (EOL)",
+                        "Python 3.4 (EOL)",
+                        "Python 3.3 (EOL)",
+                        "Python 3.2 (EOL)",
+                        "Python 3.1 (EOL)",
+                        "Python 3.0 (EOL)",
+                        "Python 2.7 (EOL)",
+                        "Python 2.6 (EOL)",
+                        "All versions"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "PEP Index",
+                        "Beginner's Guide",
+                        "Book List",
+                        "Audio/Visual Talks",
+                        "Python Developer’s Guide"
+                    ]
+                },
+                {
+                    "type": "ul",
+                    "items": [
+                        "index",
+                        "modules |",
+                        "",
+                        "Python »",
+                        "",
+                        "",
+                        "3.14.6 Documentation »",
+                        "",
+                        "|",
+                        "Theme Auto Light Dark |"
+                    ]
+                }
+            ]
+        }
+    },
+    "failed_urls": {},
+    "visited_urls": [
+        "https://docs.python.org/3.16/",
+        "https://docs.python.org/3/download.html",
+        "https://docs.python.org/3.15/",
+        "https://docs.python.org/3/",
+        "https://docs.python.org/3.14/"
+    ],
+    "stats": {
+        "processed": 5,
+        "failed": 0,
+        "visited": 5,
+        "max_depth": 2,
+        "same_domain_only": true,
+        "exclude_patterns": [
+            ".pdf",
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".gif",
+            "/login",
+            "/admin"
+        ],
+        "include_patterns": []
+    }
+}
