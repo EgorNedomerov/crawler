@@ -2,9 +2,7 @@ import asyncio
 import json
 import time
 from urllib.parse import urlparse
-
 from day_1 import AsyncCrawler
-from day_2 import HTMLParser
 from day_3 import CrawlerQueue, SemaphoreManager
 
 
@@ -155,10 +153,7 @@ def test_same_domain_filter(crawler: AsyncCrawler, start_urls: list[str]):
                 f"URL вне разрешенного домена: {url}"
             )
 
-
 def test_exclude_patterns(crawler: AsyncCrawler):
-
-    print("\nИсключающие паттерны")
 
     print(f"Исключающие паттерны: {crawler.exclude_patterns}")
     print(f"Проверено URL: {len(crawler.visited_urls)}")
@@ -180,29 +175,24 @@ async def demo_crawl():
     crawler = AsyncCrawler(
         max_concurrent=10,
         max_depth=2,
-        max_per_domain=2
-    )
-
-    crawler.parser = HTMLParser()
-
-    crawler.same_domain_only = True
-    crawler.exclude_patterns = [
-        ".pdf",
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".gif",
-        "/login",
-        "/admin"
-    ]
-    crawler.include_patterns = []
-
+    )   
     start_time = time.perf_counter()
-
+    
     try:
         results = await crawler.crawl(
-            start_urls=start_urls,
-            max_pages=5
+            start_urls = ["https://docs.python.org/3/"],
+            max_pages= 50,
+            same_domain_only=True,
+            exclude_patterns = [
+                    ".pdf",
+                    ".jpg",
+                    ".jpeg",
+                    ".png",
+                    ".gif",
+                    "/login",
+                    "/admin"
+                ],
+            include_patterns = []
         )
 
         total_time = time.perf_counter() - start_time
@@ -226,12 +216,10 @@ async def demo_crawl():
     finally:
         await crawler.close()
 
-
 async def main():
     await test_queue_priority()
     await test_semaphore_manager()
     await demo_crawl()
-
 
 if __name__ == "__main__":
     asyncio.run(main())

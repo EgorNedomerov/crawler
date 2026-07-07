@@ -209,7 +209,7 @@ class HTMLParser:
 
 if __name__ == "__main__":
 
-    from day_1 import AsyncCrawler
+    from day_2 import AsyncCrawler
 
     async def parsing ():
         

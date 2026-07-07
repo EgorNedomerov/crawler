@@ -3,14 +3,22 @@ import aiohttp
 import aiofiles # добавил импорт, но по требованиям не понял, где неоходимо читать или записывать файлы асинхронно
 import time
 from urllib.parse import urlparse
+from day_2 import HTMLParser
 from day_3 import CrawlerQueue, SemaphoreManager
+import random
+from day_4 import RateLimiter, RobotsParser
 class AsyncCrawler:
     
     def __init__(
         self, 
         max_concurrent: int = 10,
         max_depth: int = 2,
-        max_per_domain: int = 2
+        max_per_domain: int = 2,
+        requests_per_second: float = 1.0,
+        respect_robots: bool = True,
+        min_delay: float = 0.0,
+        jitter: float = 0.0,
+        user_agent: str = "MyCrawler/1.0"
         ):
         
         self.max_concurrent = max_concurrent
@@ -47,18 +55,82 @@ class AsyncCrawler:
         self.same_domain_only = True
         self.exclude_patterns = []
         self.include_patterns = []
+        
+        self.requests_per_second = requests_per_second
+        self.respect_robots = respect_robots
+        self.min_delay = min_delay
+        self.jitter = jitter
+        self.user_agent = user_agent
+
+        self.rate_limiter = RateLimiter(
+            requests_per_second=requests_per_second,
+            per_domain=True
+        )
+
+        self.robots_parser = RobotsParser()
+
+        self.blocked_by_robots = []
+        self.request_times = []
+        self.backoff_errors = {}
+        self.parser = HTMLParser ()
 
     async def fetch_url (self, url: str) -> str:
         
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
         await self.semaphore_manager.acquire(url)
 
         try:
+            if self.respect_robots:
+                base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+
+                await self.robots_parser.fetch_robots(base_url)
+
+                if not self.robots_parser.can_fetch(url, self.user_agent):
+                    error = "URL заблокирован robots.txt"
+                    self.last_errors[url] = error
+                    self.blocked_by_robots.append(url)
+                    print(f"Заблокировано robots.txt: {url}")
+                    return ""
+
+                robots_delay = self.robots_parser.get_crawl_delay(self.user_agent)
+
+                if robots_delay > 0:
+                    print(f"Crawl-delay для {domain}: {robots_delay} сек.")
+                    await asyncio.sleep(robots_delay)
+
+            await self.rate_limiter.acquire(domain)
+
+            delay = self.min_delay
+
+            if self.jitter > 0:
+                delay += random.uniform(0, self.jitter)
+
+            if delay > 0:
+                await asyncio.sleep(delay)
+            
+            errors = self.backoff_errors.get(url, 0)
+
+            if errors > 0:
+                backoff_delay = min(2 ** errors, 30)
+                print(f"Backoff для {url}: ожидание {backoff_delay} сек.")
+                await asyncio.sleep(backoff_delay)
+
             print(f"Начинается загрузка {url}")
 
-            async with self.session.get(url) as response:
+            headers = {
+                "User-Agent": self.user_agent
+            }
+            
+            async with self.session.get(url, headers=headers) as response:
                 response.raise_for_status()
 
                 html = await response.text()
+                request_end = time.perf_counter()
+                self.request_times.append(request_end)
+
+                if url in self.backoff_errors:
+                    del self.backoff_errors[url]
                 
                 print(f"Успешно загружено {url}") 
                 return html
@@ -66,18 +138,21 @@ class AsyncCrawler:
         except aiohttp.ClientResponseError as e:
             error = f"HTTP ошибка. Статус: {e.status}"
             self.last_errors[url] = error
+            self.backoff_errors[url] = self.backoff_errors.get(url, 0) + 1
             print(f"Ошибка: {url}. Статус: {e.status}")
             return ""
         
         except asyncio.TimeoutError:
             error = "Таймаут запроса"
             self.last_errors[url] = error
+            self.backoff_errors[url] = self.backoff_errors.get(url, 0) + 1
             print(f"Таймаут: {url}")
             return ""
 
         except aiohttp.ClientError as e:
             error = f"Сетевая ошибка: {e}"
             self.last_errors[url] = error
+            self.backoff_errors[url] = self.backoff_errors.get(url, 0) + 1
             print(f"Сетевая ошибка: {url} | {e}")
             return ""
         
@@ -100,6 +175,9 @@ class AsyncCrawler:
                 "tables": [],
                 "lists": []
             }
+        
+        if self.parser is None:
+            raise ValueError ("Парсер не установлен")
 
         parsed_data = await self.parser.parse_html(html, url)
         
@@ -122,15 +200,25 @@ class AsyncCrawler:
 
         return results
     
-    async def crawl(self, start_urls: list[str], max_pages: int = 100):
+    async def crawl(
+            self, 
+            start_urls: list[str], 
+            max_pages: int = 100,
+            same_domain_only: bool = True,
+            exclude_patterns: list[str] | None = None,
+            include_patterns: list[str] | None = None
+            ):
     
         self.visited_urls = set()
         self.failed_urls = {}
         self.processed_urls = {}
         self.queue = CrawlerQueue()
 
+        self.same_domain_only = same_domain_only
+        self.exclude_patterns = exclude_patterns or []
+        self.include_patterns = include_patterns or []
+        
         start_time = time.perf_counter()
-
         allowed_domains = set()
 
         for url in start_urls:
@@ -147,78 +235,99 @@ class AsyncCrawler:
 
         while len(self.processed_urls) < max_pages:
             
-            url = await self.queue.get_next()
+            batch = []
+            
+            while len(batch) < self.max_concurrent and len(self.processed_urls) + len(batch) < max_pages:
+                url = await self.queue.get_next()
 
-            if url is None:
+                if url is None:
+                    break
+
+                if url in self.visited_urls:
+                    continue
+
+                depth = self.queue.get_depth(url)
+
+                if depth > self.max_depth:
+                    continue
+
+                parsed_url = urlparse(url)
+
+                if self.same_domain_only:
+                    if parsed_url.netloc not in allowed_domains:
+                        continue
+
+                if self.exclude_patterns:
+                    excluded = False
+
+                    for pattern in self.exclude_patterns:
+                        if pattern in url:
+                            excluded = True
+                            break
+
+                    if excluded:
+                        continue
+
+                if self.include_patterns:
+                    included = False
+
+                    for pattern in self.include_patterns:
+                        if pattern in url:
+                            included = True
+                            break
+
+                    if not included:
+                        continue
+
+                self.visited_urls.add(url)
+                batch.append((url,depth))
+
+            if not batch:
                 break
 
-            if url in self.visited_urls:
-                continue
+            tasks = []
 
-            depth = self.queue.get_depth(url)
-
-            if depth > self.max_depth:
-                continue
-
-            parsed_url = urlparse(url)
-
-            if self.same_domain_only:
-                if parsed_url.netloc not in allowed_domains:
-                    continue
-
-            if self.exclude_patterns:
-                excluded = False
-
-                for pattern in self.exclude_patterns:
-                    if pattern in url:
-                        excluded = True
-                        break
-
-                if excluded:
-                    continue
-
-            if self.include_patterns:
-                included = False
-
-                for pattern in self.include_patterns:
-                    if pattern in url:
-                        included = True
-                        break
-
-                if not included:
-                    continue
-
-            self.visited_urls.add(url)
-
-            parsed_data = await self.fetch_and_parse(url)
-
-            if not parsed_data["text"] and not parsed_data["links"]:
-                error = "Ошибка загрузки или пустая страница"
-
-                self.failed_urls[url] = error
-                self.queue.mark_failed(url, error)
-
-            else:
+            for url, depth in batch:
+                task = asyncio.create_task(self.fetch_and_parse(url))
+                tasks.append(task)
+        
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            for (url, depth), parsed_data in zip(batch, results):
                 
-                self.processed_urls[url] = parsed_data
-                self.queue.mark_processed(url)
+                if isinstance(parsed_data, Exception):
+                    error = f"Ошибка обработки страницы {parsed_data}"
+                    self.failed_urls[url] = error
+                    self.queue.mark_failed(url,error)
+                    continue
+            
+                if not parsed_data["text"] and not parsed_data["links"]:
+                    error = "Ошибка загрузки или пустая страница"
 
-                if depth < self.max_depth:
-                    links = parsed_data["links"]
+                    self.failed_urls[url] = error
+                    self.queue.mark_failed(url, error)
 
-                    for link in links:
-                        if link in self.visited_urls:
-                            continue
+                else:
+                    
+                    self.processed_urls[url] = parsed_data
+                    self.queue.mark_processed(url)
 
-                        link_depth = depth + 1
+                    if depth < self.max_depth:
+                        links = parsed_data["links"]
 
-                        if link_depth > self.max_depth:
-                            continue
+                        for link in links:
+                            if link in self.visited_urls:
+                                continue
 
-                        added = self.queue.add_url(link, priority=0)
+                            link_depth = depth + 1
 
-                        if added:
-                            self.queue.set_depth(link, link_depth)
+                            if link_depth > self.max_depth:
+                                continue
+
+                            added = self.queue.add_url(link, priority=0)
+
+                            if added:
+                                self.queue.set_depth(link, link_depth)
 
             elapsed = time.perf_counter() - start_time
 
@@ -228,6 +337,7 @@ class AsyncCrawler:
                 speed = 0
 
             stats = self.queue.get_stats()
+            crawler_stats = self.get_stats()
 
             print(
                 f"\nПрогресс:"
@@ -235,9 +345,35 @@ class AsyncCrawler:
                 f"\nВ очереди: {stats['queued']}"
                 f"\nОшибок: {len(self.failed_urls)}"
                 f"\nСкорость: {speed:.2f} страниц/сек"
+                 f"\n"
+                f"\nRate limiting:"
+                f"\nСкорость запросов: {crawler_stats['current_speed_req_sec']} req/sec"
+                f"\nСредняя задержка: {crawler_stats['rate_limiter']['average_delay']} сек."
+                f"\nЗаблокировано robots.txt: {crawler_stats['blocked_by_robots']}"
             )
-
         return self.processed_urls
+
+    def get_stats(self):
+    
+        rate_stats = self.rate_limiter.get_stats()
+        robots_stats = self.robots_parser.get_stats()
+
+        current_speed = 0.0
+
+        if len(self.request_times) >= 2:
+            elapsed = self.request_times[-1] - self.request_times[0]
+
+            if elapsed > 0:
+                current_speed = len(self.request_times) / elapsed
+
+        stats = {
+            "current_speed_req_sec": round(current_speed, 2),
+            "rate_limiter": rate_stats,
+            "robots": robots_stats,
+            "blocked_by_robots": len(self.blocked_by_robots)
+        }
+
+        return stats
 
     async def close(self):
         
@@ -257,7 +393,7 @@ if __name__ == "__main__":
             "https://jsonplaceholder.typicode.com/posts/1",
             "https://httpbin.org/status/404",
             "https://httpbin.org/status/500",
-            "https://httpbin.org/delay/15"
+            "https://httpbin.org/delay/1"
             ]
         
         # урлы с одинаковыми ключами для последовательной загрузки
