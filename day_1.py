@@ -7,6 +7,7 @@ from day_2 import HTMLParser
 from day_3 import CrawlerQueue, SemaphoreManager
 import random
 from day_4 import RateLimiter, RobotsParser
+from day_5 import RetryStrategy, TransientError, NetworkError, PermanentError, ParseError
 class AsyncCrawler:
     
     def __init__(
@@ -18,7 +19,12 @@ class AsyncCrawler:
         respect_robots: bool = True,
         min_delay: float = 0.0,
         jitter: float = 0.0,
-        user_agent: str = "MyCrawler/1.0"
+        user_agent: str = "MyCrawler/1.0",
+        max_retries: int = 3,
+        backoff_factor: float = 2.0,
+        timeout_total: float = 10,
+        timeout_connect: float = 5,
+        timeout_read: float = 6
         ):
         
         self.max_concurrent = max_concurrent
@@ -26,9 +32,9 @@ class AsyncCrawler:
         self.max_per_domain = max_per_domain
 
         timeout = aiohttp.ClientTimeout (
-            total = 10,
-            connect = 5,
-            sock_read = 6
+            total = timeout_total,
+            connect = timeout_connect,
+            sock_read = timeout_read
         )
 
         connector = aiohttp.TCPConnector(
@@ -61,6 +67,10 @@ class AsyncCrawler:
         self.min_delay = min_delay
         self.jitter = jitter
         self.user_agent = user_agent
+        self.timeout_total = timeout_total
+        self.timeout_connect = timeout_connect
+        self.timeout_read = timeout_read
+        self.backoff_factor = backoff_factor
 
         self.rate_limiter = RateLimiter(
             requests_per_second=requests_per_second,
@@ -71,94 +81,114 @@ class AsyncCrawler:
 
         self.blocked_by_robots = []
         self.request_times = []
-        self.backoff_errors = {}
         self.parser = HTMLParser ()
+        self.retry_strategy = RetryStrategy(
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            retry_on=[TransientError, NetworkError] 
+        )
 
     async def fetch_url (self, url: str) -> str:
         
-        parsed_url = urlparse(url)
-        domain = parsed_url.netloc
-        await self.semaphore_manager.acquire(url)
+        async def do_request():
+            
+            parsed_url = urlparse(url)
+            domain = parsed_url.netloc
+
+            attempt = self.retry_strategy.current_attempt
+
+            timeout_multiplier = self.backoff_factor ** (attempt - 1)
+            
+            request_timeout = aiohttp.ClientTimeout(
+                total= self.timeout_total * timeout_multiplier,
+                connect= self.timeout_connect * timeout_multiplier,
+                sock_read= self.timeout_read * timeout_multiplier
+            )
+            await self.semaphore_manager.acquire(url)
+
+            try:
+                if self.respect_robots:
+                    base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+
+                    await self.robots_parser.fetch_robots(base_url)
+
+                    if not self.robots_parser.can_fetch(url, self.user_agent):
+                        raise PermanentError ("URL заблокирован robots.txt", url = url, status = 403)
+                    
+                    robots_delay = self.robots_parser.get_crawl_delay(self.user_agent)
+
+                    if robots_delay > 0:
+                        print(f"Crawl-delay для {domain}: {robots_delay} сек.")
+                        await asyncio.sleep(robots_delay)
+
+                await self.rate_limiter.acquire(domain)
+
+                delay = self.min_delay
+
+                if self.jitter > 0:
+                    delay += random.uniform(0, self.jitter)
+
+                if delay > 0:
+                    await asyncio.sleep(delay)
+
+                print(f"Начинается загрузка {url}")
+
+                headers = {
+                    "User-Agent": self.user_agent
+                }
+            
+                async with self.session.get(url, headers=headers, timeout=request_timeout) as response:
+                
+                    if response.status in [429, 500, 503]:
+                        raise TransientError (f"Временнная ошибка. Статус {response.status}", url = url, status = response.status) 
+                    
+                    if response.status in [403, 404]:
+                        raise PermanentError(f"Постоянная ошибка. Статус {response.status}", url = url, status = response.status)
+                    
+                    html = await response.text()
+                    request_end = time.perf_counter()
+                    self.request_times.append(request_end)
+
+                    print(f"Успешно загружено {url}") 
+                    return html
+            
+            except aiohttp.ClientConnectionError as e:
+                raise NetworkError(f"Ошибка соединения: {e}", url = url )
+            
+            except asyncio.TimeoutError:
+                raise TransientError(f"Таймаут запроса", url = url)
+
+            except aiohttp.ClientError as e:
+                raise NetworkError(f"Сетевая ошибка: {e}", url = url)
+            
+            finally:
+                self.semaphore_manager.release(url)
 
         try:
-            if self.respect_robots:
-                base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
+            return await self.retry_strategy.execute_with_retry(do_request)
+        
+        except PermanentError as e:
+            self.last_errors[url] = e.message
+            self.failed_urls[url] = e.message
 
-                await self.robots_parser.fetch_robots(base_url)
+            if e.message == "URL заблокирован robots.txt":
+                self.blocked_by_robots.append(url)
 
-                if not self.robots_parser.can_fetch(url, self.user_agent):
-                    error = "URL заблокирован robots.txt"
-                    self.last_errors[url] = error
-                    self.blocked_by_robots.append(url)
-                    print(f"Заблокировано robots.txt: {url}")
-                    return ""
-
-                robots_delay = self.robots_parser.get_crawl_delay(self.user_agent)
-
-                if robots_delay > 0:
-                    print(f"Crawl-delay для {domain}: {robots_delay} сек.")
-                    await asyncio.sleep(robots_delay)
-
-            await self.rate_limiter.acquire(domain)
-
-            delay = self.min_delay
-
-            if self.jitter > 0:
-                delay += random.uniform(0, self.jitter)
-
-            if delay > 0:
-                await asyncio.sleep(delay)
+            print(f"Постоянная ошибка: {url} | {e.message}")
+            return ""
             
-            errors = self.backoff_errors.get(url, 0)
-
-            if errors > 0:
-                backoff_delay = min(2 ** errors, 30)
-                print(f"Backoff для {url}: ожидание {backoff_delay} сек.")
-                await asyncio.sleep(backoff_delay)
-
-            print(f"Начинается загрузка {url}")
-
-            headers = {
-                "User-Agent": self.user_agent
-            }
-            
-            async with self.session.get(url, headers=headers) as response:
-                response.raise_for_status()
-
-                html = await response.text()
-                request_end = time.perf_counter()
-                self.request_times.append(request_end)
-
-                if url in self.backoff_errors:
-                    del self.backoff_errors[url]
-                
-                print(f"Успешно загружено {url}") 
-                return html
-            
-        except aiohttp.ClientResponseError as e:
-            error = f"HTTP ошибка. Статус: {e.status}"
-            self.last_errors[url] = error
-            self.backoff_errors[url] = self.backoff_errors.get(url, 0) + 1
-            print(f"Ошибка: {url}. Статус: {e.status}")
+        except TransientError as e:
+            self.last_errors[url] = e.message
+            self.failed_urls[url] = e.message
+            print(f"Временная ошибка после всех повторов: {url} | {e.message}")
             return ""
         
-        except asyncio.TimeoutError:
-            error = "Таймаут запроса"
-            self.last_errors[url] = error
-            self.backoff_errors[url] = self.backoff_errors.get(url, 0) + 1
-            print(f"Таймаут: {url}")
+        except NetworkError as e:
+            self.last_errors[url] = e.message
+            self.failed_urls[url] = e.message
+            print(f"Сетевая ошибка после всех повторов: {url} | {e.message}")
             return ""
-
-        except aiohttp.ClientError as e:
-            error = f"Сетевая ошибка: {e}"
-            self.last_errors[url] = error
-            self.backoff_errors[url] = self.backoff_errors.get(url, 0) + 1
-            print(f"Сетевая ошибка: {url} | {e}")
-            return ""
-        
-        finally:
-            self.semaphore_manager.release(url)
-        
+           
     async def fetch_and_parse(self, url: str) -> dict:
         
         html = await self.fetch_url (url)
@@ -179,9 +209,13 @@ class AsyncCrawler:
         if self.parser is None:
             raise ValueError ("Парсер не установлен")
 
-        parsed_data = await self.parser.parse_html(html, url)
+        try:
+            parsed_data = await self.parser.parse_html(html, url)
+            return parsed_data
         
-        return parsed_data
+        except Exception as e:
+            self.last_errors[url] = f"ОШибка парсинга: {e}"
+            raise ParseError(f"Ошибка парсинга: {e}", url = url)
     
     async def fetch_urls (self, urls: list [str]) -> dict[str, str]:
         
@@ -357,6 +391,7 @@ class AsyncCrawler:
     
         rate_stats = self.rate_limiter.get_stats()
         robots_stats = self.robots_parser.get_stats()
+        retry_stats = self.retry_strategy.get_stats()
 
         current_speed = 0.0
 
@@ -370,6 +405,7 @@ class AsyncCrawler:
             "current_speed_req_sec": round(current_speed, 2),
             "rate_limiter": rate_stats,
             "robots": robots_stats,
+            "retry": retry_stats,
             "blocked_by_robots": len(self.blocked_by_robots)
         }
 
