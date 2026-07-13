@@ -139,12 +139,15 @@ class AsyncCrawler:
             
                 async with self.session.get(url, headers=headers, timeout=request_timeout) as response:
                 
-                    if response.status in [429, 500, 503]:
+                    if response.status in [429, 500, 502, 503, 504]:
                         raise TransientError (f"Временнная ошибка. Статус {response.status}", url = url, status = response.status) 
                     
-                    if response.status in [403, 404]:
+                    if response.status in [401, 403, 404]:
                         raise PermanentError(f"Постоянная ошибка. Статус {response.status}", url = url, status = response.status)
                     
+                    if response.status >= 400:
+                        raise PermanentError (f"HTTP ошибка. Статус {response.status}", url = url, status = response.status)
+                                              
                     html = await response.text()
                     request_end = time.perf_counter()
                     self.request_times.append(request_end)

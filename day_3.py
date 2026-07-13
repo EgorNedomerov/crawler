@@ -96,8 +96,14 @@ class SemaphoreManager:
         
         domain_semaphore = self.get_domain_semaphore(url)
 
-        await self.global_semaphore.acquire()
         await domain_semaphore.acquire()
+
+        try:
+            await self.global_semaphore.acquire()
+        
+        except Exception:
+            domain_semaphore.release()
+            raise
 
         self.active_tasks += 1
     
@@ -105,8 +111,8 @@ class SemaphoreManager:
         
         domain_semaphore = self.get_domain_semaphore(url)
 
-        domain_semaphore.release()
         self.global_semaphore.release()
+        domain_semaphore.release()
 
         self.active_tasks -= 1
 
