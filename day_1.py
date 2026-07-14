@@ -8,6 +8,7 @@ from day_3 import CrawlerQueue, SemaphoreManager
 import random
 from day_4 import RateLimiter, RobotsParser
 from day_5 import RetryStrategy, TransientError, NetworkError, PermanentError, ParseError
+from datetime import datetime
 class AsyncCrawler:
     
     def __init__(
@@ -24,7 +25,8 @@ class AsyncCrawler:
         backoff_factor: float = 2.0,
         timeout_total: float = 10,
         timeout_connect: float = 5,
-        timeout_read: float = 6
+        timeout_read: float = 6,
+        storage = None
         ):
         
         self.max_concurrent = max_concurrent
@@ -71,6 +73,16 @@ class AsyncCrawler:
         self.timeout_connect = timeout_connect
         self.timeout_read = timeout_read
         self.backoff_factor = backoff_factor
+        self.storage = storage
+        self.saved_count = 0 
+        self.storage_errors = []
+        self.last_status_codes = {}
+        self.last_content_types = {}
+        self.storage_retry_strategy = RetryStrategy(
+            max_retries=max_retries,
+            backoff_factor=backoff_factor,
+            retry_on=[OSError]
+        )
 
         self.rate_limiter = RateLimiter(
             requests_per_second=requests_per_second,
@@ -138,6 +150,9 @@ class AsyncCrawler:
                 }
             
                 async with self.session.get(url, headers=headers, timeout=request_timeout) as response:
+
+                    self.last_status_codes[url] = response.status
+                    self.last_content_types[url] = response.headers.get("Content-Type", "")
                 
                     if response.status in [429, 500, 502, 503, 504]:
                         raise TransientError (f"Временнная ошибка. Статус {response.status}", url = url, status = response.status) 
@@ -214,6 +229,11 @@ class AsyncCrawler:
 
         try:
             parsed_data = await self.parser.parse_html(html, url)
+
+            parsed_data["crawled_at"] = datetime.now().isoformat()
+            parsed_data["status_code"] = self.last_status_codes.get(url, 0)
+            parsed_data["content_type"] = self.last_content_types.get(url, "")
+
             return parsed_data
         
         except Exception as e:
@@ -270,11 +290,11 @@ class AsyncCrawler:
             if added:
                 self.queue.set_depth(url, 0)
 
-        while len(self.processed_urls) < max_pages:
+        while len(self.visited_urls) < max_pages:
             
             batch = []
             
-            while len(batch) < self.max_concurrent and len(self.processed_urls) + len(batch) < max_pages:
+            while len(batch) < self.max_concurrent and len(self.visited_urls) < max_pages:
                 url = await self.queue.get_next()
 
                 if url is None:
@@ -349,6 +369,8 @@ class AsyncCrawler:
                     self.processed_urls[url] = parsed_data
                     self.queue.mark_processed(url)
 
+                    await self.save_page(parsed_data)
+
                     if depth < self.max_depth:
                         links = parsed_data["links"]
 
@@ -389,6 +411,25 @@ class AsyncCrawler:
                 f"\nЗаблокировано robots.txt: {crawler_stats['blocked_by_robots']}"
             )
         return self.processed_urls
+    
+    async def save_page(self, data: dict):
+        
+        if self.storage is None:
+            return
+
+        try:
+            await self.storage_retry_strategy.execute_with_retry(self.storage.save, data)
+
+            self.saved_count += 1
+
+        except Exception as e:
+            
+            url = data.get("url", "")
+            error = f"Ошибка сохранения {url}: {e}"
+
+            self.storage_errors.append(error)
+
+            print(error)
 
     def get_stats(self):
     
@@ -409,7 +450,11 @@ class AsyncCrawler:
             "rate_limiter": rate_stats,
             "robots": robots_stats,
             "retry": retry_stats,
-            "blocked_by_robots": len(self.blocked_by_robots)
+            "blocked_by_robots": len(self.blocked_by_robots),
+            "storage": {
+                "saved_count": self.saved_count,
+                "storage_errors": len(self.storage_errors)
+            }
         }
 
         return stats
@@ -417,6 +462,9 @@ class AsyncCrawler:
     async def close(self):
         
         await self.session.close()
+
+        if self.storage is not None:
+            await self.storage.close()
 
 if __name__ == "__main__":
     
