@@ -114,13 +114,19 @@ class JSONStorage(DataStorage):
         self,
         filename: str,
         encoding: str = "utf-8",
-        indent: int | None = None
+        indent: int | None = None,
+        mode: str = "jsonl"
     ):
+        if mode not in ["jsonl", "json_array"]:
+            raise ValueError("mode должен быть 'jsonl' или 'json_array'")
         self.filename = filename
         self.encoding = encoding
         self.indent = indent
         self.saved_count = 0
         self.closed = False
+        self.mode = mode
+        self.initialized = False
+        self.first_item = True
 
     async def save(self, data: dict):
         
@@ -129,24 +135,57 @@ class JSONStorage(DataStorage):
 
         prepared_data = prepare_for_json(data)
 
-        json_line = json.dumps(
-            prepared_data,
-            ensure_ascii=False,
-            indent=self.indent
-        )
+        if self.mode == "jsonl":
+            json_line = json.dumps(
+                prepared_data,
+                ensure_ascii=False
+            )
+            async with aiofiles.open(self.filename,mode = "a", encoding = self.encoding) as file:
+                await file.write(json_line)
+                await file.write("\n")
 
-        async with aiofiles.open(
-            self.filename,
-            mode="a",
-            encoding=self.encoding
-        ) as file:
-            await file.write(json_line)
-            await file.write("\n")
+        else:
+            if not self.initialized:
+                async with aiofiles.open(self.filename, mode = "w", encoding = self.encoding) as file:
+                    await file.write("[\n")
 
+                self.initialized = True
+            
+            json_object = json.dumps(prepared_data, ensure_ascii = False, indent = self.indent)
+
+            async with aiofiles.open(self.filename, mode = "a", encoding = self.encoding) as file:
+                if not self.first_item:
+                    await file.write(",\n")
+
+                await file.write(json_object)
+            
+            self.first_item = False
+            
         self.saved_count += 1
 
     async def close(self):
         
+        if self.closed:
+            return
+        
+        if self.mode == "json_array":
+            if not self.initialized:
+                async with aiofiles.open(
+                    self.filename,
+                    mode="w",
+                    encoding=self.encoding
+                ) as file:
+                    await file.write("[\n")
+
+                self.initialized = True
+
+            async with aiofiles.open(
+                self.filename,
+                mode="a",
+                encoding=self.encoding
+            ) as file:
+                await file.write("\n]\n")
+
         self.closed = True
 
 class CSVStorage(DataStorage):

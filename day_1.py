@@ -89,7 +89,13 @@ class AsyncCrawler:
             per_domain=True
         )
 
-        self.robots_parser = RobotsParser()
+        self.robots_parser = RobotsParser(
+            session = self.session,
+            rate_limiter=self.rate_limiter,
+            semaphore_manager=self.semaphore_manager,
+            user_agent=self.user_agent,
+            timeout=timeout
+        )
 
         self.blocked_by_robots = []
         self.request_times = []
@@ -116,7 +122,8 @@ class AsyncCrawler:
                 connect= self.timeout_connect * timeout_multiplier,
                 sock_read= self.timeout_read * timeout_multiplier
             )
-            await self.semaphore_manager.acquire(url)
+
+            acquired = False
 
             try:
                 if self.respect_robots:
@@ -132,7 +139,10 @@ class AsyncCrawler:
                     if robots_delay > 0:
                         print(f"Crawl-delay для {domain}: {robots_delay} сек.")
                         await asyncio.sleep(robots_delay)
-
+                
+                await self.semaphore_manager.acquire(url)
+                acquired = True
+                
                 await self.rate_limiter.acquire(domain)
 
                 delay = self.min_delay
@@ -180,7 +190,8 @@ class AsyncCrawler:
                 raise NetworkError(f"Сетевая ошибка: {e}", url = url)
             
             finally:
-                self.semaphore_manager.release(url)
+                if acquired:
+                    self.semaphore_manager.release(url)
 
         try:
             return await self.retry_strategy.execute_with_retry(do_request)

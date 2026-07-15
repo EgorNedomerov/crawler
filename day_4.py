@@ -73,11 +73,35 @@ class RateLimiter:
 
 class RobotsParser:
     
-    def __init__(self):
+    def __init__(
+        self,
+        session = None,
+        rate_limiter = None,
+        semaphore_manager = None,
+        user_agent: str = "*",
+        timeout = None
+    ):
        
         self.robots_cache = {}
         self.current_base_url = ContextVar("current_base_url", default=None)
         self.blocked_urls = []
+
+        self.robots_locks = {}
+        self.lock_creation_lock = asyncio.Lock()
+
+        self.session = session
+        self.rate_limiter = rate_limiter
+        self.semaphore_manager = semaphore_manager
+        self.user_agent = user_agent
+        self.timeout = timeout
+    
+    async def get_robots_lock(self, base_url: str):
+    
+        async with self.lock_creation_lock:
+            if base_url not in self.robots_locks:
+                self.robots_locks[base_url] = asyncio.Lock()
+
+            return self.robots_locks[base_url]
 
     async def fetch_robots(self, base_url: str) -> dict:
         robots_url = urljoin(base_url, "/robots.txt")
@@ -91,54 +115,112 @@ class RobotsParser:
                 "cached": True,
                 "success": True
             }
+        
+        robots_lock = await self.get_robots_lock(base_url)
 
-        parser = RobotFileParser()
-        parser.set_url(robots_url)
+        async with robots_lock:
+            if base_url in self.robots_cache:
+                return{
+                    "base_url": base_url,
+                    "robots_url": robots_url,
+                    "cached": True,
+                    "success": True
+                }
 
-        try:
-            timeout = aiohttp.ClientTimeout(total=10)
+            parser = RobotFileParser()
+            parser.set_url(robots_url)
+            
+            acquired = False
 
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(robots_url) as response:
+            try:
+                parsed = urlparse(base_url)
+                domain = parsed.netloc
 
-                    if response.status >= 400:
-                        parser.parse([])
+                if self.semaphore_manager is not None:
+                    await self.semaphore_manager.acquire(robots_url)
+                    acquired = True
+                
+                if self.rate_limiter is not None:
+                    await self.rate_limiter.acquire(domain)
+                
+                headers = { "User-Agent": self.user_agent}
+
+                timeout = self.timeout
+                
+                if timeout is None:
+                    timeout = aiohttp.ClientTimeout(total = 10)
+
+                if self.session is not None:
+                        async with self.session.get(robots_url, headers=headers, timeout=timeout) as response:
+                        
+                            if response.status >= 400:
+                                parser.parse([])
+                                self.robots_cache[base_url] = parser
+
+                                return {
+                                    "base_url": base_url,
+                                    "robots_url": robots_url,
+                                    "cached": False,
+                                    "success": False,
+                                    "status": response.status
+                                }
+
+                            text = await response.text()
+                            parser.parse(text.splitlines())
+
+                            self.robots_cache[base_url] = parser
+                    
+                            return {
+                                "base_url": base_url,
+                                "robots_url": robots_url,
+                                "cached": False,
+                                "success": True,
+                                "status": response.status
+                            }
+
+                async with aiohttp.ClientSession(timeout=timeout) as session:
+                    async with session.get(robots_url, headers=headers) as response:
+                        if response.status >= 400:
+                            parser.parse ([])
+                            self.robots_cache[base_url] = parser
+
+                            return {
+                                "base_url": base_url,
+                                "robots_url": robots_url,
+                                "cached": False,
+                                "success": False,
+                                "status": response.status
+                            }
+                        
+                        text = await response.text()
+                        parser.parse(text.splitlines())
+
                         self.robots_cache[base_url] = parser
 
                         return {
                             "base_url": base_url,
                             "robots_url": robots_url,
                             "cached": False,
-                            "success": False,
+                            "success": True,
                             "status": response.status
                         }
+                    
+            except Exception as e:
+                print(f"Предупреждение: robots.txt не загружен для {base_url}. Ошибка: {e}")
 
-                    text = await response.text()
-                    parser.parse(text.splitlines())
+                parser.parse([])
+                self.robots_cache[base_url] = parser
 
-                    self.robots_cache[base_url] = parser
-            
-                    return {
-                        "base_url": base_url,
-                        "robots_url": robots_url,
-                        "cached": False,
-                        "success": True,
-                        "status": response.status
-                    }
-
-        except Exception as e:
-            print(f"Предупреждение: robots.txt не загружен для {base_url}. Ошибка: {e}")
-
-            parser.parse([])
-            self.robots_cache[base_url] = parser
-
-            return {
-                "base_url": base_url,
-                "robots_url": robots_url,
-                "cached": False,
-                "success": False,
-                "error": str(e)
-            }
+                return {
+                    "base_url": base_url,
+                    "robots_url": robots_url,
+                    "cached": False,
+                    "success": False,
+                    "error": str(e)
+                }
+            finally:
+                if acquired:
+                    self.semaphore_manager.release(robots_url)
 
     def can_fetch(self, url: str, user_agent: str = "*") -> bool:
         
