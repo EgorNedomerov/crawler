@@ -2,7 +2,7 @@ import asyncio
 import time
 from day_1 import AsyncCrawler
 from day_4 import RateLimiter, RobotsParser
-
+import logging
 
 async def test_rate_limiter_one_domain():
     
@@ -125,6 +125,11 @@ async def main():
     await test_robots_parser()
     await test_robots_blocked_url()
     await demo_crawler_day_4()
-    
+
+logging.basicConfig(
+        level = logging.INFO,
+        format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+    )
+
 if __name__ == "__main__":
     asyncio.run(main())

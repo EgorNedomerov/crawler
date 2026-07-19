@@ -250,7 +250,6 @@ class SQLiteStorage(DataStorage):
         self.filename = filename
         self.batch_size = batch_size
         self.connection = None
-        self.buffer = []
         self.saved_count = 0
         self.closed = False
 
@@ -293,17 +292,8 @@ class SQLiteStorage(DataStorage):
             await self.init_db()
 
         row = prepare_for_sqlite(data)
-        self.buffer.append(row)
-
-        if len(self.buffer) >= self.batch_size:
-            await self._flush_batch()
-
-    async def _flush_batch(self):
         
-        if not self.buffer:
-            return
-
-        await self.connection.executemany("""
+        await self.connection.execute("""
             INSERT OR REPLACE INTO pages (
                 url,
                 title,
@@ -315,12 +305,45 @@ class SQLiteStorage(DataStorage):
                 content_type
             )
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, self.buffer)
+        """, row)
 
         await self.connection.commit()
 
-        self.saved_count += len(self.buffer)
-        self.buffer = []
+        self.saved_count += 1
+           
+    async def save_many(self, items: list[dict]):
+        
+        if self.closed:
+            raise OSError("SQLiteStorage уже закрыт")
+
+        if self.connection is None:
+            await self.init_db()
+
+        if not items:
+            return
+
+        rows = [prepare_for_sqlite(item) for item in items]
+
+        for index in range(0, len(rows), self.batch_size):
+            batch = rows[index:index + self.batch_size]
+
+            await self.connection.executemany("""
+                INSERT OR REPLACE INTO pages (
+                    url,
+                    title,
+                    text,
+                    links,
+                    metadata,
+                    crawled_at,
+                    status_code,
+                    content_type
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, batch)
+
+            await self.connection.commit()
+
+            self.saved_count += len(batch)
 
     async def read_all(self) -> list[dict]:
         if self.connection is None:
@@ -359,8 +382,10 @@ class SQLiteStorage(DataStorage):
         return results
 
     async def close(self):
+        if self.closed:
+            return
+        
         if self.connection is not None:
-            await self._flush_batch()
             await self.connection.close()
 
         self.closed = True

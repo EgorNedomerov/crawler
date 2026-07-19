@@ -4,6 +4,9 @@ import time
 from urllib.parse import urlparse, urljoin
 from urllib.robotparser import RobotFileParser
 from contextvars import ContextVar
+import logging 
+logger = logging.getLogger(__name__)
+
 class RateLimiter:
     
     def __init__(self, requests_per_second: float = 1.0, per_domain: bool = True ):
@@ -206,7 +209,7 @@ class RobotsParser:
                         }
                     
             except Exception as e:
-                print(f"Предупреждение: robots.txt не загружен для {base_url}. Ошибка: {e}")
+                logger.warning("robots.txt не загружен для %s. Ошибка: %s", base_url, e)
 
                 parser.parse([])
                 self.robots_cache[base_url] = parser
@@ -238,6 +241,7 @@ class RobotsParser:
 
         if not allowed:
             self.blocked_urls.append(url)
+            logger.warning("URL заблокирован robots.txt: %s", url)
 
         return allowed
 

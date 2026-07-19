@@ -1,1 +1,258 @@
-Демо day_3 вынесено в отдельный файл test_day_3.py
+Асинхронный web crawler на Python.
+
+## Возможности проекта
+
+- Асинхронная загрузка страниц через `aiohttp`
+- HTML-парсинг через `BeautifulSoup`
+- Очередь URL с приоритетами и глубиной обхода
+- Ограничение количества одновременных задач
+- Ограничение количества запросов на домен
+- Поддержка `robots.txt`
+- Поддержка `crawl-delay`
+- Retry-логика для временных и сетевых ошибок
+- Разделение постоянных и временных ошибок
+- Сохранение данных в:
+  - JSONL
+  - JSON array
+  - CSV
+  - SQLite
+- Поддержка `sitemap.xml`
+- Поддержка sitemap index
+- Рекурсивная обработка sitemap index
+- Расширенная статистика
+- Экспорт статистики в JSON
+- Генерация HTML-отчёта
+- Конфигурация через `config.json`
+- CLI-интерфейс через `argparse`
+- Логирование в консоль и файл
+- Ротация логов
+- Тестирование производительности
+- Сравнение async crawler и sync crawler
+- Проверка масштабируемости на 100, 500 и 1000 страниц
+
+## Структура проекта
+
+```text
+crawler/
+├── day_1.py              # AsyncCrawler
+├── day_2.py              # HTMLParser
+├── day_3.py              # CrawlerQueue, SemaphoreManager
+├── day_4.py              # RateLimiter, RobotsParser
+├── day_5.py              # RetryStrategy, custom errors
+├── day_6.py              # DataStorage, JSONStorage, CSVStorage, SQLiteStorage
+├── day_7.py              # SitemapParser, CrawlerStats, AdvancedCrawler
+├── crawler.py            # CLI-интерфейс
+├── config.json           # Конфигурационный файл
+├── demo_day_7.py         # Демонстрация работы Day 7
+├── test_day_7.py         # Тесты Day 7
+├── performance_test.py   # Тест производительности
+├── requirements.txt      # Зависимости проекта
+└── README.md             # Документация
+```
+## Установка
+
+### 1. Клонировать проект
+
+```bash
+git clone <repo-url>
+cd crawler
+```
+### 2. Создать виртуальное окружение
+
+#### Windows PowerShell
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
+#### macOS / Linux
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+### 3. Установить зависимости
+
+```bash
+pip install -r requirements.txt
+```
+## Зависимости
+
+В проекте используются:
+
+```text
+aiohttp
+aiofiles
+aiosqlite
+beautifulsoup4
+lxml
+```
+
+Модули ниже входят в стандартную библиотеку Python и не требуют установки:
+
+```text
+asyncio
+json
+csv
+time
+datetime
+argparse
+logging
+sqlite3
+urllib.parse
+urllib.request
+xml.etree.ElementTree
+http.server
+threading
+tracemalloc
+```
+## Быстрый запуск
+
+### Запуск тестов Day 7
+
+```bash
+python test_day_7.py
+```
+### Запуск демонстрации
+
+```bash
+python demo_day_7.py
+```
+
+После запуска создаются или обновляются файлы:
+
+```text
+results.jsonl
+stats.json
+report.html
+crawler.log
+```
+
+### Запуск через CLI
+
+```bash
+python crawler.py --urls https://example.com --max-pages 5 --output results.jsonl
+```
+
+Пример с глубиной обхода:
+
+```bash
+python crawler.py --urls https://example.com --max-pages 10 --max-depth 2 --output results.jsonl
+```
+
+Пример с отключением `robots.txt`:
+
+```bash
+python crawler.py --urls https://example.com --max-pages 10 --no-respect-robots --output results.jsonl
+```
+
+Пример с лимитом запросов:
+
+```bash
+python crawler.py --urls https://example.com --max-pages 10 --rate-limit 2.0 --output results.jsonl
+```
+
+### Запуск через конфигурационный файл
+
+```bash
+python crawler.py --config config.json
+```
+
+## CLI-интерфейс
+
+Файл `crawler.py` предоставляет командную строку для запуска crawler.
+
+### Основные параметры
+
+| Параметр | Описание |
+|---|---|
+| `--urls` | Стартовые URL |
+| `--max-pages` | Максимальное количество страниц |
+| `--max-depth` | Максимальная глубина обхода |
+| `--output` | Файл для сохранения результатов |
+| `--config` | Путь к JSON-конфигурации |
+| `--respect-robots` | Соблюдать `robots.txt` |
+| `--no-respect-robots` | Не соблюдать `robots.txt` |
+| `--rate-limit` | Лимит запросов в секунду |
+| `--stats-json` | Файл для JSON-статистики |
+| `--html-report` | Файл HTML-отчёта |
+
+
+## Описание API
+
+В проекте основной программный интерфейс представлен классами:
+
+- `AsyncCrawler`
+- `AdvancedCrawler`
+- `SitemapParser`
+- `CrawlerStats`
+- `DataStorage`
+- `JSONStorage`
+- `CSVStorage`
+- `SQLiteStorage`
+
+---
+
+## `AsyncCrawler`
+
+Базовый асинхронный crawler.
+
+Расположен в файле:
+
+```python
+day_1.py
+```
+
+## Конфигурационный файл
+
+Проект использует JSON-конфигурацию.
+
+Пример файла `config.json`:
+
+```json
+{
+    "start_urls": [
+        "https://example.com"
+    ],
+    "sitemaps": [],
+    "max_pages": 20,
+    "max_depth": 2,
+    "max_concurrent": 5,
+    "max_per_domain": 2,
+    "rate_limit": 1.0,
+    "respect_robots": true,
+    "same_domain_only": true,
+    "min_delay": 0.0,
+    "jitter": 0.0,
+    "user_agent": "MyCrawler/1.0",
+    "exclude_patterns": [
+        ".pdf",
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".zip",
+        ".tar",
+        ".tar.bz2",
+        ".bz2",
+        ".gz",
+        ".epub",
+        "/login",
+        "/admin"
+    ],
+    "include_patterns": [],
+    "storage": {
+        "type": "json",
+        "filename": "results.jsonl",
+        "mode": "jsonl",
+        "indent": null,
+        "batch_size": 10
+    },
+    "logging": {
+        "filename": "crawler.log",
+        "level": "INFO",
+        "max_bytes": 1000000,
+        "backup_count": 3
+    }
+}
+```

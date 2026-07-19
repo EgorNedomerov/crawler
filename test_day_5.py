@@ -3,7 +3,7 @@ from day_5 import RetryStrategy, TransientError, NetworkError, PermanentError
 import json
 import time
 import asyncio
-
+import logging
 async def test_retry_transient_error():
     
     print(f"\nТест повтора TransientError")
@@ -250,6 +250,11 @@ async def main():
     await test_http_404_no_retry()
     await test_http_503_retry()
     await demo_day_5()
+
+logging.basicConfig(
+        level = logging.INFO,
+        format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+    )
 
 if __name__ == "__main__":
     asyncio.run(main())

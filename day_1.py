@@ -9,6 +9,10 @@ import random
 from day_4 import RateLimiter, RobotsParser
 from day_5 import RetryStrategy, TransientError, NetworkError, PermanentError, ParseError
 from datetime import datetime
+import sqlite3
+import logging 
+logger = logging.getLogger(__name__)
+
 class AsyncCrawler:
     
     def __init__(
@@ -81,7 +85,11 @@ class AsyncCrawler:
         self.storage_retry_strategy = RetryStrategy(
             max_retries=max_retries,
             backoff_factor=backoff_factor,
-            retry_on=[OSError]
+            retry_on=[
+                OSError,
+                sqlite3.OperationalError,
+                sqlite3.DatabaseError
+                      ]
         )
 
         self.rate_limiter = RateLimiter(
@@ -137,7 +145,7 @@ class AsyncCrawler:
                     robots_delay = self.robots_parser.get_crawl_delay(self.user_agent)
 
                     if robots_delay > 0:
-                        print(f"Crawl-delay для {domain}: {robots_delay} сек.")
+                        logger.info("Crawl-delay для %s: %.2f сек.", domain, robots_delay)
                         await asyncio.sleep(robots_delay)
                 
                 await self.semaphore_manager.acquire(url)
@@ -153,7 +161,7 @@ class AsyncCrawler:
                 if delay > 0:
                     await asyncio.sleep(delay)
 
-                print(f"Начинается загрузка {url}")
+                logger.info("Начинается загрузка %s", url)
 
                 headers = {
                     "User-Agent": self.user_agent
@@ -177,7 +185,7 @@ class AsyncCrawler:
                     request_end = time.perf_counter()
                     self.request_times.append(request_end)
 
-                    print(f"Успешно загружено {url}") 
+                    logger.info("Успешно загружено %s", url) 
                     return html
             
             except aiohttp.ClientConnectionError as e:
@@ -203,19 +211,19 @@ class AsyncCrawler:
             if e.message == "URL заблокирован robots.txt":
                 self.blocked_by_robots.append(url)
 
-            print(f"Постоянная ошибка: {url} | {e.message}")
+            logger.error("Постоянная ошибка: %s | %s", url, e.message)
             return ""
             
         except TransientError as e:
             self.last_errors[url] = e.message
             self.failed_urls[url] = e.message
-            print(f"Временная ошибка после всех повторов: {url} | {e.message}")
+            logger.error("Временная ошибка после всех повторов: %s | %s", url, e.message)
             return ""
         
         except NetworkError as e:
             self.last_errors[url] = e.message
             self.failed_urls[url] = e.message
-            print(f"Сетевая ошибка после всех повторов: {url} | {e.message}")
+            logger.error("Сетевая ошибка после всех повторов: %s | %s", url, e.message)
             return ""
            
     async def fetch_and_parse(self, url: str) -> dict:
@@ -409,18 +417,44 @@ class AsyncCrawler:
             stats = self.queue.get_stats()
             crawler_stats = self.get_stats()
 
-            print(
-                f"\nПрогресс:"
-                f"\nОбработано страниц: {len(self.processed_urls)}"
-                f"\nВ очереди: {stats['queued']}"
-                f"\nОшибок: {len(self.failed_urls)}"
-                f"\nСкорость: {speed:.2f} страниц/сек"
-                 f"\n"
-                f"\nRate limiting:"
-                f"\nСкорость запросов: {crawler_stats['current_speed_req_sec']} req/sec"
-                f"\nСредняя задержка: {crawler_stats['rate_limiter']['average_delay']} сек."
-                f"\nЗаблокировано robots.txt: {crawler_stats['blocked_by_robots']}"
+            progress_percent = round((len(self.visited_urls) / max_pages) * 100, 2)
+
+            if speed > 0:
+                remaining_pages = max_pages - len(self.visited_urls)
+                eta = remaining_pages / speed
+            else:
+                eta = 0
+
+            semaphore_stats = self.semaphore_manager.get_semaphore_stats()
+            active_tasks = semaphore_stats["active_tasks"]
+
+            logger.info(
+                "\nПрогресс: %.2f%%"
+                "\nПосещено URL: %s / %s"
+                "\nОбработано страниц: %s"
+                "\nВ очереди: %s"
+                "\nОшибок: %s"
+                "\nСкорость: %.2f страниц/сек"
+                "\nОценка оставшегося времени: %.2f сек."
+                "\nАктивные задачи: %s"
+                "\n\nRate limiting:"
+                "\nСкорость запросов: %s req/sec"
+                "\nСредняя задержка: %s сек."
+                "\nЗаблокировано robots.txt: %s",
+                progress_percent,
+                len(self.visited_urls),
+                max_pages,
+                len(self.processed_urls),
+                stats["queued"],
+                len(self.failed_urls),
+                speed,
+                eta,
+                active_tasks,
+                crawler_stats["current_speed_req_sec"],
+                crawler_stats["rate_limiter"]["average_delay"],
+                crawler_stats["blocked_by_robots"]
             )
+            
         return self.processed_urls
     
     async def save_page(self, data: dict):
@@ -440,7 +474,7 @@ class AsyncCrawler:
 
             self.storage_errors.append(error)
 
-            print(error)
+            logger.error(error)
 
     def get_stats(self):
     
@@ -548,5 +582,9 @@ if __name__ == "__main__":
         
         finally:
             await crawler.close()
-
+    
+    logging.basicConfig(
+        level = logging.INFO,
+        format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+    )
     asyncio.run(main())

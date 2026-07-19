@@ -1,4 +1,7 @@
 import asyncio
+import logging 
+logger = logging.getLogger(__name__)
+
 class RetryStrategy:
     def __init__(self, max_retries: int = 3, backoff_factor: float = 2.0, retry_on: list = None):
         self.max_retries = max_retries
@@ -26,7 +29,8 @@ class RetryStrategy:
 
                 if attempt > 1:
                     self.successful_retries += 1
-                
+                    logger.info("Успешная повторная попытка: попытка %s", attempt)
+
                 self.attempt_logs.append ({
                     "attempt": attempt,
                     "status": "success",
@@ -70,11 +74,11 @@ class RetryStrategy:
                         "delay": 0
                     })
 
-                    print(
-                        f"Ошибка без повтора. "
-                        f"Тип: {error_type}. "
-                        f"URL: {url}. "
-                        f"Попытка: {attempt}. "
+                    logger.error(
+                        "Ошибка без повтора. Тип: %s. URL: %s. Попытка: %s",
+                        error_type,
+                        url,
+                        attempt
                     )
                     raise error
                 
@@ -96,11 +100,12 @@ class RetryStrategy:
                     "delay": delay
                 })
 
-                print(
-                    f"Ошибка: {error_type}. "
-                    f"URL: {url}. "
-                    f"Попытка: {attempt}. "
-                    f"Следующая попытка: {delay:.2f} сек. "
+                logger.warning(
+                    "Ошибка: %s. URL: %s. Попытка: %s. Следующая попытка: %.2f сек.", 
+                    error_type,
+                    url,
+                    attempt,
+                    delay
                 )
 
                 await asyncio.sleep(delay)
