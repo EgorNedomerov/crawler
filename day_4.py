@@ -17,6 +17,7 @@ class RateLimiter:
         self.per_domain = per_domain
         self.min_interval = 1 / requests_per_second
         self.last_request_time = {}
+        self.domain_min_intervals = {}
         self.global_lock = asyncio.Lock ()
         self.domain_locks = {}
         self.stats_lock = asyncio.Lock()
@@ -38,13 +39,16 @@ class RateLimiter:
             key = "global"
             lock = self.global_lock
         
+        domain_interval = self.domain_min_intervals.get(key, 0.0)
+        effective_interval = max(self.min_interval, domain_interval)
+        
         async with lock:
             now = time.perf_counter()
             last_time = self.last_request_time.get(key)
             
             if last_time is not None:
                 elapsed = now - last_time
-                wait_time = self.min_interval - elapsed
+                wait_time = effective_interval - elapsed
                 
                 if wait_time > 0:
                     async with self.stats_lock:
@@ -57,6 +61,18 @@ class RateLimiter:
             
             async with self.stats_lock:
                 self.total_requests += 1
+    
+    def set_domain_min_interval(self, domain: str, min_interval: float):
+        
+        key = domain or "unknown"
+        
+        if min_interval <= 0:
+            return
+        
+        current_interval = self.domain_min_intervals.get(key, 0.0)
+
+        if min_interval > current_interval:
+            self.domain_min_intervals[key] = min_interval
         
     def get_stats(self):
         
@@ -71,7 +87,8 @@ class RateLimiter:
             "total_requests": self.total_requests,
             "wait_count": self.wait_count,
             "total_wait_time": round(self.total_wait_time, 2),
-            "average_delay": round(average_delay, 2)
+            "average_delay": round(average_delay, 2),
+            "domain_min_intervals": self.domain_min_intervals
         }
 
 class RobotsParser:

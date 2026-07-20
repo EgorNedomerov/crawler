@@ -114,6 +114,49 @@ class AsyncCrawler:
             retry_on=[TransientError, NetworkError] 
         )
 
+    def reset_runtime_state(self):
+        
+        self.visited_urls = set()
+        self.failed_urls = {}
+        self.processed_urls = {}
+        self.last_errors = {}
+        self.last_status_codes = {}
+        self.last_content_types = {}
+
+        self.blocked_by_robots = []
+        self.request_times = []
+
+        self.queue = CrawlerQueue()
+
+        self.semaphore_manager.active_tasks = 0
+        self.semaphore_manager.domain_semaphores = {}
+
+        self.saved_count = 0
+        self.storage_errors = []
+
+        self.rate_limiter.last_request_time = {}
+        self.rate_limiter.domain_min_intervals = {}
+        self.rate_limiter.total_wait_time = 0.0
+        self.rate_limiter.total_requests = 0
+        self.rate_limiter.wait_count = 0
+
+        self.robots_parser.blocked_urls = []
+        self.robots_parser.robots_cache = {}
+
+        self.retry_strategy.error_counts = {}
+        self.retry_strategy.successful_retries = 0
+        self.retry_strategy.retry_times = []
+        self.retry_strategy.permanent_error_urls = []
+        self.retry_strategy.attempt_logs = []
+        self.retry_strategy.current_attempt = 1
+
+        self.storage_retry_strategy.error_counts = {}
+        self.storage_retry_strategy.successful_retries = 0
+        self.storage_retry_strategy.retry_times = []
+        self.storage_retry_strategy.permanent_error_urls = []
+        self.storage_retry_strategy.attempt_logs = []
+        self.storage_retry_strategy.current_attempt = 1
+
     async def fetch_url (self, url: str) -> str:
         
         async def do_request():
@@ -146,7 +189,7 @@ class AsyncCrawler:
 
                     if robots_delay > 0:
                         logger.info("Crawl-delay для %s: %.2f сек.", domain, robots_delay)
-                        await asyncio.sleep(robots_delay)
+                        self.rate_limiter.set_domain_min_interval(domain, robots_delay)
                 
                 await self.semaphore_manager.acquire(url)
                 acquired = True
@@ -285,10 +328,7 @@ class AsyncCrawler:
             include_patterns: list[str] | None = None
             ):
     
-        self.visited_urls = set()
-        self.failed_urls = {}
-        self.processed_urls = {}
-        self.queue = CrawlerQueue()
+        self.reset_runtime_state()
 
         self.same_domain_only = same_domain_only
         self.exclude_patterns = exclude_patterns or []
@@ -367,16 +407,81 @@ class AsyncCrawler:
                 task = asyncio.create_task(self.fetch_and_parse(url))
                 tasks.append(task)
         
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            pending_tasks = set(tasks)
+
+            while pending_tasks:
+                await asyncio.sleep(0)
+
+                elapsed = time.perf_counter() - start_time
+
+                if elapsed > 0:
+                    speed = len(self.processed_urls) / elapsed
+                else:
+                    speed = 0
+
+                stats = self.queue.get_stats()
+                crawler_stats = self.get_stats()
+
+                progress_percent = round((len(self.visited_urls) / max_pages) * 100, 2)
+
+                if speed > 0:
+                    remaining_pages = max_pages - len(self.visited_urls)
+                    eta = remaining_pages / speed
+                else:
+                    eta = 0
+
+                semaphore_stats = self.semaphore_manager.get_semaphore_stats()
+                active_tasks = semaphore_stats["active_tasks"]
+
+                logger.info(
+                    "\nПрогресс: %.2f%%"
+                    "\nПосещено URL: %s / %s"
+                    "\nОбработано страниц: %s"
+                    "\nВ очереди: %s"
+                    "\nОшибок: %s"
+                    "\nСкорость: %.2f страниц/сек"
+                    "\nОценка оставшегося времени: %.2f сек."
+                    "\nАктивные задачи: %s"
+                    "\n\nRate limiting:"
+                    "\nСкорость запросов: %s req/sec"
+                    "\nСредняя задержка: %s сек."
+                    "\nЗаблокировано robots.txt: %s",
+                    progress_percent,
+                    len(self.visited_urls),
+                    max_pages,
+                    len(self.processed_urls),
+                    stats["queued"],
+                    len(self.failed_urls),
+                    speed,
+                    eta,
+                    active_tasks,
+                    crawler_stats["current_speed_req_sec"],
+                    crawler_stats["rate_limiter"]["average_delay"],
+                    crawler_stats["blocked_by_robots"]
+                )
+
+                _, pending_tasks = await asyncio.wait(
+                    pending_tasks,
+                    timeout=1.0,
+                    return_when=asyncio.FIRST_COMPLETED
+                )
+            
+            results = []
+            
+            for task in tasks:
+                try:
+                    results.append(task.result())
+                except Exception as e:
+                    results.append(e)
             
             for (url, depth), parsed_data in zip(batch, results):
-                
+    
                 if isinstance(parsed_data, Exception):
                     error = f"Ошибка обработки страницы {parsed_data}"
                     self.failed_urls[url] = error
-                    self.queue.mark_failed(url,error)
+                    self.queue.mark_failed(url, error)
                     continue
-            
+
                 if not parsed_data["text"] and not parsed_data["links"]:
                     error = "Ошибка загрузки или пустая страница"
 
@@ -384,7 +489,6 @@ class AsyncCrawler:
                     self.queue.mark_failed(url, error)
 
                 else:
-                    
                     self.processed_urls[url] = parsed_data
                     self.queue.mark_processed(url)
 
@@ -405,56 +509,8 @@ class AsyncCrawler:
                             added = self.queue.add_url(link, priority=0)
 
                             if added:
-                                self.queue.set_depth(link, link_depth)
-
-            elapsed = time.perf_counter() - start_time
-
-            if elapsed > 0:
-                speed = len(self.processed_urls) / elapsed
-            else:
-                speed = 0
-
-            stats = self.queue.get_stats()
-            crawler_stats = self.get_stats()
-
-            progress_percent = round((len(self.visited_urls) / max_pages) * 100, 2)
-
-            if speed > 0:
-                remaining_pages = max_pages - len(self.visited_urls)
-                eta = remaining_pages / speed
-            else:
-                eta = 0
-
-            semaphore_stats = self.semaphore_manager.get_semaphore_stats()
-            active_tasks = semaphore_stats["active_tasks"]
-
-            logger.info(
-                "\nПрогресс: %.2f%%"
-                "\nПосещено URL: %s / %s"
-                "\nОбработано страниц: %s"
-                "\nВ очереди: %s"
-                "\nОшибок: %s"
-                "\nСкорость: %.2f страниц/сек"
-                "\nОценка оставшегося времени: %.2f сек."
-                "\nАктивные задачи: %s"
-                "\n\nRate limiting:"
-                "\nСкорость запросов: %s req/sec"
-                "\nСредняя задержка: %s сек."
-                "\nЗаблокировано robots.txt: %s",
-                progress_percent,
-                len(self.visited_urls),
-                max_pages,
-                len(self.processed_urls),
-                stats["queued"],
-                len(self.failed_urls),
-                speed,
-                eta,
-                active_tasks,
-                crawler_stats["current_speed_req_sec"],
-                crawler_stats["rate_limiter"]["average_delay"],
-                crawler_stats["blocked_by_robots"]
-            )
-            
+                                self.queue.set_depth(link, link_depth)  
+                                
         return self.processed_urls
     
     async def save_page(self, data: dict):
